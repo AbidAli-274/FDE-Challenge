@@ -1,0 +1,15 @@
+---
+- timestamp: "2026-11-26T21:25:00"
+- user_prompt: "hi, are you available??"
+- assistant_response_summary: "Confirmed availability."
+- files_affected: "none"
+---
+- timestamp: "2026-11-26T21:31:00"
+- user_prompt: "Copy data pack files, check_submission.py, answer_key, ai_logging_prompt.txt into repo root; add .gitignore excluding .env and .env.example; remove the ridgeline folder"
+- assistant_response_summary: "Copied rfqs/, answer_key/, CSVs, check_submission.py, ai_logging_prompt.txt; created .gitignore and .env.example; deleted data pack folder."
+- files_affected: ".gitignore, .env.example, rfqs/, answer_key/, products.csv, cross_reference.csv, customers.csv, check_submission.py, ai_logging_prompt.txt"
+---
+- timestamp: "2026-11-26T21:40:00"
+- user_prompt: "make sure the setup that you did above is according to the following instructions: <challenge brief pasted>"
+- assistant_response_summary: "Audited setup against brief; blanked .env.example value, added README.md skeleton with required headings, CLAUDE.md logging config, .chat-history/log.md, ran git init."
+- files_affected: ".env.example, README.md, CLAUDE.md, .chat-history/log.md"
