@@ -19,3 +19,6 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
+
+# Scratch review dumps
+*_outputs.txt

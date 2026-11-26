@@ -1,0 +1,20 @@
+{
+  "rfq_id": "rfq_04_handwritten",
+  "customer_id": null,
+  "lines": [
+    {
+      "line": 1,
+      "as_written": "entire RFQ",
+      "quantity": null,
+      "unit": null,
+      "ridgeline_part_number": null,
+      "match_method": null,
+      "confidence": null,
+      "needs_review": true,
+      "flags": [
+        "stub"
+      ],
+      "note": "Handwritten image RFQ: no image reader is implemented, so it needs a human to read it."
+    }
+  ]
+}

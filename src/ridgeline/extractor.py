@@ -41,11 +41,13 @@ def validate(args) -> ExtractedRFQ:
 
 def extract(text: str) -> ExtractedRFQ:
     load_dotenv()
+    # Groq exposes an OpenAI-compatible API, so the openai client is reused.
     client = OpenAI(
-        base_url=os.getenv("OPENAI_BASE_URL") or "https://us.api.openai.com/v1",  # US data residency
+        api_key=os.getenv("GROQ_API_KEY"),
+        base_url=os.getenv("GROQ_BASE_URL") or "https://api.groq.com/openai/v1",
     )
     resp = client.chat.completions.create(
-        model=os.getenv("OPENAI_MODEL") or "gpt-4o",
+        model=os.getenv("GROQ_MODEL") or "openai/gpt-oss-120b",
         temperature=0,
         messages=[{"role": "system", "content": PROMPT}, {"role": "user", "content": text}],
         tools=[TOOL],

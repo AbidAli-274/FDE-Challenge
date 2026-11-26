@@ -1,0 +1,116 @@
+{
+  "threshold": 0.8,
+  "extraction_accuracy": 0.7368,
+  "match_precision": 1.0,
+  "match_recall": 0.5882,
+  "additional_metrics": {
+    "confidence_table": [
+      {
+        "cutoff": 0.5,
+        "accepted": 15,
+        "correct": 15,
+        "precision": 1.0,
+        "recall": 0.8824,
+        "left_for_review": 4
+      },
+      {
+        "cutoff": 0.55,
+        "accepted": 15,
+        "correct": 15,
+        "precision": 1.0,
+        "recall": 0.8824,
+        "left_for_review": 4
+      },
+      {
+        "cutoff": 0.6,
+        "accepted": 13,
+        "correct": 13,
+        "precision": 1.0,
+        "recall": 0.7647,
+        "left_for_review": 6
+      },
+      {
+        "cutoff": 0.65,
+        "accepted": 13,
+        "correct": 13,
+        "precision": 1.0,
+        "recall": 0.7647,
+        "left_for_review": 6
+      },
+      {
+        "cutoff": 0.7,
+        "accepted": 12,
+        "correct": 12,
+        "precision": 1.0,
+        "recall": 0.7059,
+        "left_for_review": 7
+      },
+      {
+        "cutoff": 0.75,
+        "accepted": 10,
+        "correct": 10,
+        "precision": 1.0,
+        "recall": 0.5882,
+        "left_for_review": 9
+      },
+      {
+        "cutoff": 0.8,
+        "accepted": 10,
+        "correct": 10,
+        "precision": 1.0,
+        "recall": 0.5882,
+        "left_for_review": 9
+      },
+      {
+        "cutoff": 0.85,
+        "accepted": 10,
+        "correct": 10,
+        "precision": 1.0,
+        "recall": 0.5882,
+        "left_for_review": 9
+      },
+      {
+        "cutoff": 0.9,
+        "accepted": 10,
+        "correct": 10,
+        "precision": 1.0,
+        "recall": 0.5882,
+        "left_for_review": 9
+      },
+      {
+        "cutoff": 0.95,
+        "accepted": 10,
+        "correct": 10,
+        "precision": 1.0,
+        "recall": 0.5882,
+        "left_for_review": 9
+      },
+      {
+        "cutoff": 1.0,
+        "accepted": 1,
+        "correct": 1,
+        "precision": 1.0,
+        "recall": 0.0588,
+        "left_for_review": 18
+      }
+    ],
+    "per_rfq": {
+      "rfq_01_email": {
+        "lines": 5,
+        "extraction_correct": 1,
+        "match_correct": 4
+      },
+      "rfq_02_clearwater": {
+        "lines": 6,
+        "extraction_correct": 6,
+        "match_correct": 5
+      },
+      "rfq_03_tricounty": {
+        "lines": 8,
+        "extraction_correct": 7,
+        "match_correct": 6
+      }
+    },
+    "review_rate": 0.4737
+  }
+}

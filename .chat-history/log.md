@@ -83,3 +83,58 @@
 - user_prompt: "Build the matcher: exact Ridgeline part number, then cross reference, then fuzzy description match; each line gets match method and confidence; below threshold 0.8 sets needs_review true. Create a plan first, I will review it."
 - assistant_response_summary: "Profiled products.csv/cross_reference.csv read-only (1 discontinued part, 1 ambiguous competitor PN, xref notes), wrote and got the plan approved, then implemented matching/matcher.py: match(ExtractedRFQ) -> list[OutputLine] with exact PN (1.0), cross reference (0.95, 0.7 with note), discontinued->replaced_by (0.7), difflib+token-coverage description fallback with floor 0.5 and ambiguity penalty, needs_review if conf<0.8, null or any flag. Tested on 14 hand-built lines; wrote matcher_outputs.txt."
 - files_affected: "src/ridgeline/matching/matcher.py, src/ridgeline/matching/__init__.py, matcher_outputs.txt, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T02:40:00"
+- user_prompt: "Handle the special RFQs: rfq_04 stub with one line, flag and reason in note; rfq_05 and 06 run as they are, flag what cannot be handled. Write one JSON per RFQ in outputs/, run once to check the format. No plan needed."
+- assistant_response_summary: "Added pipeline.py: process() reads each RFQ, stubs the png (one line 'entire RFQ', flag 'stub', reason in note), otherwise extract -> match, with customer_id lookup against customers.csv by name; main() writes outputs/<stem>.json. Ran once: rfq_04 stub is correct, but the other five fell back to a single flagged 'extraction_failed' line because OpenAI still returns 401. check_submission.py shows no JSON-content failures; remaining FAILs are untracked outputs, missing evaluation/results.json and README sections. It also wrote ridgeline-quote-desk.zip (git-ignored)."
+- files_affected: "src/ridgeline/pipeline.py, outputs/rfq_01_email.json, outputs/rfq_02_clearwater.json, outputs/rfq_03_tricounty.json, outputs/rfq_04_handwritten.json, outputs/rfq_05_forwarded_chain.json, outputs/rfq_06_messy.json, ridgeline-quote-desk.zip, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T02:55:00"
+- user_prompt: "Can you please try the OpenAI key again? Since I have replaced it with the new one."
+- assistant_response_summary: "Reran the pipeline: still 401 AuthenticationError on all five readable RFQs, so outputs/ are the same extraction_failed placeholders. Diagnosed without sending RFQ data: key loads from .env (length 164, sk- prefix, no stray quotes/spaces), no shell variable overrides it, and a metadata-only models.list call returns 401 on both the US and global endpoints. Conclusion: OpenAI rejects the key itself."
+- files_affected: "outputs/rfq_01_email.json, outputs/rfq_02_clearwater.json, outputs/rfq_03_tricounty.json, outputs/rfq_04_handwritten.json, outputs/rfq_05_forwarded_chain.json, outputs/rfq_06_messy.json, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T03:05:00"
+- user_prompt: "Can we move forward without the API key?"
+- assistant_response_summary: "Answered yes: the evaluation script, evaluation/results.json and README do not need the LLM; only real extraction and meaningful metrics do. Proposed building the eval script and README now and rerunning the pipeline once the key works. No changes made."
+- files_affected: "none"
+---
+- timestamp: "2026-11-27T03:30:00"
+- user_prompt: "Write the evaluation file: reads the answer keys and outputs for the three keyed RFQs, prints extraction accuracy, match precision, match recall, writes evaluation results with threshold, the three metrics and additional metrics, and shows how many lines are correct at different confidence scores. Create a simple plan, don't over-engineer."
+- assistant_response_summary: "Planned (approved) then wrote evaluation/evaluate.py: pairs lines by number, extraction accuracy = quantity+unit match, precision/recall over lines accepted at confidence >= 0.8, confidence table for cutoffs 0.5-1.0 (accepted, correct, precision, recall, left for review), per-RFQ and review rate in additional_metrics; writes evaluation/results.json. Ran on current placeholder outputs (19 key lines, all metrics ~0) and self-tested with outputs derived from the key in the scratchpad (all 1.0)."
+- files_affected: "evaluation/evaluate.py, evaluation/results.json, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T03:45:00"
+- user_prompt: "Switch to Groq instead of OpenAI; I will set the Groq API key in the env, change the llm accordingly."
+- assistant_response_summary: "Changed extractor.extract to use Groq through its OpenAI-compatible endpoint (openai client reused): api_key from GROQ_API_KEY, base URL GROQ_BASE_URL default https://api.groq.com/openai/v1, model GROQ_MODEL default llama-3.3-70b-versatile, same forced submit_rfq tool call. Rewrote .env.example with GROQ_* names. Checked that GROQ_API_KEY is not yet set in .env (presence only), so did not run the pipeline."
+- files_affected: "src/ridgeline/extractor.py, .env.example, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T04:10:00"
+- user_prompt: "I have pasted Groq's key into the env file. You can just test it now."
+- assistant_response_summary: "Ran pipeline: first NotFoundError because default model llama-3.3-70b-versatile is not on the account (listed models only, no RFQ data). Switched default GROQ_MODEL to openai/gpt-oss-120b. rfq_02/03 then failed Groq tool schema validation (model invented a 'uom' field); added a rule to extraction_prompt.txt to use only schema field names. All five readable RFQs now extract (rfq_01 5 lines, 02 6, 03 8, 05 3, 06 6; rfq_04 stub). evaluate.py: extraction_accuracy 0.7368, match_precision 1.0, match_recall 0.6471 at 0.8; confidence table shows recall 0.94 at 0.5-0.55."
+- files_affected: "src/ridgeline/extractor.py, src/ridgeline/extraction_prompt.txt, outputs/rfq_01_email.json, outputs/rfq_02_clearwater.json, outputs/rfq_03_tricounty.json, outputs/rfq_04_handwritten.json, outputs/rfq_05_forwarded_chain.json, outputs/rfq_06_messy.json, evaluation/results.json, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T04:30:00"
+- user_prompt: "Please populate the readme using the exact required headings: repo link, commands, setup guide, keep it simple and brief."
+- assistant_response_summary: "Wrote README.md under the six required headings: repo link from git remote, setup and run commands (pip install, .env with GROQ_API_KEY, pipeline, evaluate, check_submission), approach, evaluation table from results.json (0.74 / 1.0 / 0.65 at 0.8), and Production with a Mermaid flowchart plus bullets. Ran check_submission.py README check."
+- files_affected: "README.md, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T04:50:00"
+- user_prompt: "Draft a movement diagram for our FAQ email in Reader Extractor Matcher Confidence Check Human Review Queue Approved Code You also need to add failure paths, extraction fails, or new format that goes to manual queue with an alert. You need to also add a reviewer correction feedback loop as well."
+- assistant_response_summary: "Read the request as a flow diagram for the RFQ email pipeline ('FAQ' = RFQ, 'Approved Code' = approved quote). Wrote docs/flow_diagram.md with a Mermaid flowchart: Reader -> Extractor -> Matcher -> Confidence check -> Human review queue -> Approval -> Approved quote; failure paths (new/unsupported format, extraction fails) go to an alert and manual queue; dotted reviewer-correction loop feeds corrections store back to matcher, extractor, reader and threshold. README unchanged."
+- files_affected: "docs/flow_diagram.md, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T05:00:00"
+- user_prompt: "Create the mermaid in vertical orientation since the horizontal one is not as visible as it is as it should be."
+- assistant_response_summary: "docs/flow_diagram.md was already vertical (flowchart TD); the horizontal one was the README Production diagram (flowchart LR), so changed it to TD. Diagram content unchanged."
+- files_affected: "README.md, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T04:45:00"
+- user_prompt: "you have to run the pipeline on all of the 6 RFQ with one command"
+- assistant_response_summary: "Ran `PYTHONPATH=src python -m ridgeline.pipeline`, which processed all six RFQs and rewrote outputs/*.json (rfq_04 stub, others extracted via Groq). Reran evaluate.py: extraction 0.7368, precision 1.0, recall 0.5882 (was 0.6471 on the previous run, so results vary slightly between runs). Updated the recall figure in README.md to 0.59."
+- files_affected: "outputs/rfq_01_email.json, outputs/rfq_02_clearwater.json, outputs/rfq_03_tricounty.json, outputs/rfq_04_handwritten.json, outputs/rfq_05_forwarded_chain.json, outputs/rfq_06_messy.json, evaluation/results.json, README.md, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T05:00:00"
+- user_prompt: "check_submission.py output pasted (8 FAIL: unclean working tree, evaluation/results.json and outputs/*.json not tracked) - check what parts are failing and fix them"
+- assistant_response_summary: "All failures were untracked or uncommitted files, not content problems. Added scratch *_outputs.txt to .gitignore, staged and committed the pipeline, evaluation, outputs, README, docs/flow_diagram.md and log. Did not push."
+- files_affected: ".gitignore, .chat-history/log.md"

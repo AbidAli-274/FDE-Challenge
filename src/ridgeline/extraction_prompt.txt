@@ -11,3 +11,4 @@ Rules:
 - In a forwarded email chain, later messages override earlier ones. Output the final requested items and quantities, and add the flag "changed_in_thread" to each line that was modified.
 - company is the customer's company name if stated, otherwise null.
 - Use short snake_case strings for any other flag.
+- Use only the field names in the schema. Column headers like UOM, Qty or Supplier Part # are not field names: put UOM in unit, Qty in quantity, and a supplier part number in competitor_part_number. Do not add any other fields.
