@@ -78,3 +78,8 @@
 - user_prompt: "try the global openai endpoint"
 - assistant_response_summary: "Reran the extractor on all five RFQs with OPENAI_BASE_URL=https://api.openai.com/v1 set for that run only (no files changed). Same 401 AuthenticationError on all five, so the key itself is rejected, not the US endpoint. Key fragment in error text scrubbed to *** in extractor_outputs.txt."
 - files_affected: "extractor_outputs.txt, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T02:10:00"
+- user_prompt: "Build the matcher: exact Ridgeline part number, then cross reference, then fuzzy description match; each line gets match method and confidence; below threshold 0.8 sets needs_review true. Create a plan first, I will review it."
+- assistant_response_summary: "Profiled products.csv/cross_reference.csv read-only (1 discontinued part, 1 ambiguous competitor PN, xref notes), wrote and got the plan approved, then implemented matching/matcher.py: match(ExtractedRFQ) -> list[OutputLine] with exact PN (1.0), cross reference (0.95, 0.7 with note), discontinued->replaced_by (0.7), difflib+token-coverage description fallback with floor 0.5 and ambiguity penalty, needs_review if conf<0.8, null or any flag. Tested on 14 hand-built lines; wrote matcher_outputs.txt."
+- files_affected: "src/ridgeline/matching/matcher.py, src/ridgeline/matching/__init__.py, matcher_outputs.txt, .chat-history/log.md"
