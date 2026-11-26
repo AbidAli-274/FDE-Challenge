@@ -63,3 +63,18 @@
 - user_prompt: "Before we move on, show me the outputs of each extractor (reader) run on the RFQs in the repo; put them in a txt file at the repo root."
 - assistant_response_summary: "Ran read_rfq on all six files in rfqs/ and wrote results to reader_outputs.txt (rfq_04 png has no reader, noted as stub). Showed contents to user."
 - files_affected: "reader_outputs.txt, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T01:15:00"
+- user_prompt: "Build the extractor: one shared extractor over reader output into line items, LLM with clear prompt (never invent, null if unknown, never output prices), validate against schema and flag failing lines. Create a plan, don't over-engineer. [then] the plan is good, implement it, put the prompt into a separate file"
+- assistant_response_summary: "Planned (user chose OpenAI + forced tool call), then implemented extractor.extract(text) with US base_url default, OPENAI_MODEL env, temperature 0, forced submit_rfq tool; validate() checks per line and turns bad lines or a bad response into flagged 'unparseable' lines. Prompt lives in extraction_prompt.txt. Installed openai, updated requirements.txt and .env.example. Tested validate() offline with malformed lines; no API call made (no key used)."
+- files_affected: "src/ridgeline/extractor.py, src/ridgeline/extraction_prompt.txt, requirements.txt, .env.example, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T01:30:00"
+- user_prompt: "The key is in the env file. Load it via environment variables, test the extractor against the inputs, show outputs in a txt file at the repo root."
+- assistant_response_summary: "Ran read_rfq -> extract on rfq_01,02,03,05,06 and wrote extractor_outputs.txt. All five calls failed with OpenAI 401 AuthenticationError (key rejected); no extraction output obtained. The error message echoed a masked key fragment, which I replaced with *** in the output file. Did not retry against a non-US endpoint."
+- files_affected: "extractor_outputs.txt, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T01:40:00"
+- user_prompt: "try the global openai endpoint"
+- assistant_response_summary: "Reran the extractor on all five RFQs with OPENAI_BASE_URL=https://api.openai.com/v1 set for that run only (no files changed). Same 401 AuthenticationError on all five, so the key itself is rejected, not the US endpoint. Key fragment in error text scrubbed to *** in extractor_outputs.txt."
+- files_affected: "extractor_outputs.txt, .chat-history/log.md"
