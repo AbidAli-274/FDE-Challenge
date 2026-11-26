@@ -58,3 +58,8 @@
 - user_prompt: "Now you're gonna have to build the readers, one for email text, one for PDF, one for Excel, and each one's output should be plain text or simple rows."
 - assistant_response_summary: "Planned in plan mode (approved), then built read_text, read_pdf (pypdf layout mode keeps table rows on one line), read_excel (openpyxl, rows joined by ' | ') and read_rfq dispatcher by extension (ValueError for .png). Installed openpyxl, added pinned requirements.txt. Checked output on rfq_02, rfq_03, rfq_05; rfq_04 png raises ValueError as planned. Log entry written after plan mode ended."
 - files_affected: "src/ridgeline/readers/text.py, src/ridgeline/readers/pdf.py, src/ridgeline/readers/excel.py, src/ridgeline/readers/__init__.py, requirements.txt, .chat-history/log.md"
+---
+- timestamp: "2026-11-27T00:45:00"
+- user_prompt: "Before we move on, show me the outputs of each extractor (reader) run on the RFQs in the repo; put them in a txt file at the repo root."
+- assistant_response_summary: "Ran read_rfq on all six files in rfqs/ and wrote results to reader_outputs.txt (rfq_04 png has no reader, noted as stub). Showed contents to user."
+- files_affected: "reader_outputs.txt, .chat-history/log.md"
